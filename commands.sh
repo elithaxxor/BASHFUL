@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#  bash_basics.sh
+#  commands.sh
 #  
 #
 #  Created by a-robot on 3/14/22.
@@ -26,7 +26,14 @@ openssl dgst -sha256 -sign macair.key -out signer verifcation.enc
 openssl base64 -in signer -out verifcation.enc
 
 
+##### INTRUSION DETECTION #### 
+# Sparrow Wifi # --> 
+https://github.com/ghostop14/sparrow-wifi
+gpsd -D 2 -N /dev/ttyUSB0 # WARDRIVING --> graphs 
+sudo ./sparrow-wifi.py 
 
+
+### KISMET - FIND ALL THE NETWORK HOST, AND DEVICE MANU
 
 
 
@@ -44,6 +51,22 @@ To grab SSL certificates
 sslyze --regular website or ip
 nslookup IP >> nslookup.txt
 http://geoiplookup.net/
+
+
+
+#### WIRESHARK #### 
+
+
+
+radio_name = $(iw dev | awk) '$1=="Interface"{print $2}'
+
+#### AIRMON-NG // SUITE ### 
+aireplay-ng -0 0 mac -c mac_of_radio radio_name 
+airemon-ng start external_radio 6 # the number is the channel 
+kismet -c radio_name  ## GETS THE MAC ADDRESS 
+
+
+
 
 ############ NMAP #############
 ## nmap to return open ports and services -SV (specific device)
@@ -69,6 +92,7 @@ sudo iw dev wlx0013eff5483f scan | egrep "signal:|SSID:" | sed -e "s/\tsignal: /
 airodump-ng wlx0013eff5483f --encrypt wep
 
 
+
 cd /usr/share/nmap/scripts
 nmap --script nmap-vulners/ -sV -sS -Pn -A -v 192.168.50.1/24 --version-intensity=9
 nmap -sV --script=vulscan/vulscan.nse 192.168.50.111
@@ -76,6 +100,14 @@ nmap --script nmap-vulners/ -sV www.securitytrails.com
 nmap --script nmap-vulners/ -sV 11.22.33.44
 nmap --script nmap-vulners/,vulscan/ -sV yourwebsite.com
 nmap -Pn --script vuln 192.168.1.105
+
+echo "scanning for open ports"
+nmap -iL probed.txt -T5 -oA scans/port_scan.txt -V
+
+## NMAP 
+echo "scanning for open ports"
+nmap -iL probed.txt -T5 -oA scans/port_scan.txt -V
+
 
 ## php vulnerability
 nmap -sV --script=http-php-version testphp.vulnweb.com
@@ -113,12 +145,23 @@ ALL HARDWARE INFO
 Apt install infix
 Infix -Fxz
 
+DIRS=$(ls *.txt)
+broadcast = $(ifconfig | grep broadcast)
+mac = $(ifconfig | grep mac)
+
+######
+
 ##### OSNIT #####
 Phonenumbers scanner
 phoneinfoga scan -n <number>
 phoneinfoga scan -n "+1 (555) 444-1212"
 
-
+# SKIP TRACER (REVERSE-LICENSE LOOKPI)
+git clone https://github.com/xillwillx/skiptracer.git skiptracer
+cd skiptracer 
+pip install -r requirements.txt
+python skiptracer.py -l (phone|email|sn|name|plate)
+ 
 
 ######## OSNIT ###########
 ### Social media accounts#####
@@ -129,7 +172,7 @@ https://api.wigle.net/
 https://www.nirsoft.net/ (look thins up, powerful tool)
 http://geoiplookup.net/ ### GEO IP LCOATIONS
 tracemyip.org
-
+inteltechniques.com 
 
 ### to create fake AP ###
 https://cybergibbons.com/security-2/quick-and-easy-fake-wifi-access-point-in-kali/
@@ -163,7 +206,56 @@ site:dedicatedglass.com inurl:http
 # TO DORK FOR LOGFILES
 Allintext:password textfile:log after:2018
 
+### TO ENUMERATE SUBDOMAINS sublist3r
+wget https://github.com/aboul3la/Sublist3r/archive/master.zip
+unzip master.zip
+./sublist3r.py -d yourdomain.com
+## look thru namesystem for hidden 
+sudo apt install dirbuster
+	
+### WEB BASED VULNS ###
+git clone https://github.com/droope/droopescan.git
+apt install python-pip
+pip install droopscan
+pip install -r requirements.txt
+./droopescan scan --help
+## doopscan to scan vulnrable webservers 
+droopscan scan drupal -u URL_HERE
+droopscan scan silverstripe -u URL_HERE
+./droopescan scan --help
+droopescan scan drupal -u example.org
+droopescan scan drupal -U list_of_urls.txt
+droopescan scan -U list_of_urls.txt
 
+python skiptracer.py -l (phone|email|sn|name|plate)
+ 
+
+## Nikto for webserver vuln scans
+git clone https://github.com/sullo/nikto
+# Main script is in program/
+cd nikto/program
+# Run using the shebang interpreter
+./nikto.pl -h http://www.example.com
+# Run using perl (if you forget to chmod)
+#### ONENVAS (NESSUS CLONE) VULN SCAN ### 
+apt install openvas 
+
+## ARP SCAN 
+echo ('enter pass:')
+read pass
+$(arp-scan -l | grep Raspberry | awk '{print $1}') root $pass
+apt-get update && apt-get install sparta python-requests
+
+
+## password crackers 
+hashcat 
+scp <file to upload> <username>@<hostname>:<destination path>
+scp -r <directory to upload> <username>@<hostname>:<destination path> # dir scp
+echo "put files*.xml" | sftp -p -i ~/.ssh/key_name username@hostname.example #u using relative loc
+sftp -b batchfile.txt ~/.ssh/key_name username@hostname.example # using batch in text
+
+
+### MAC ADDRESS RANDOMIZATION ( CELL PHONES )
 
 
 
